@@ -32,10 +32,12 @@ namespace WindowsFormsApp0411
             int Port = int.Parse(textBox3.Text);
             U = new UdpClient(Port);
             IPEndPoint EP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), Port);
+
             while (true)
             {
                 byte[] B = U.Receive(ref EP);
                 string A = Encoding.Default.GetString(B);
+                string []Z = A.Split('_');
                 string[] Q = A.Split('/');
                 Point[] R = new Point[Q.Length];
                 for(int i = 0; i < Q.Length; i++)
@@ -51,8 +53,24 @@ namespace WindowsFormsApp0411
                     L.StartPoint = R[i];
                     L.EndPoint = R[i + 1];
                     L.Parent = D;
+                    switch (Z[0])
+                    {
+                        case "1":
+                            L.BorderColor = Color.Red;
+                            break;
+                        case "2":
+                            L.BorderColor = Color.Green;
+                            break;
+                        case "3":
+                            L.BorderColor = Color.Blue;
+                            break;
+                        case "4":
+                            L.BorderColor = Color.Black;
+                            break;
+                    }
+                    
                 }
-                Thread.Sleep(2000);
+                Thread.Sleep(1500);
             }
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -113,6 +131,12 @@ namespace WindowsFormsApp0411
         {
             int Port = int.Parse(textBox_target.Text);
             UdpClient S = new UdpClient(textBox_ip.Text, Port);
+
+            if (radioButton_red.Checked) { p = "1_" + p; }
+            if (radioButton_green.Checked) { p = "2_" + p; }
+            if (radioButton_blue.Checked) { p = "3_" + p; }
+            if (radioButton_black.Checked) { p = "4_" + p; }
+
             byte[] B = Encoding.Default.GetBytes(p);
             S.Send(B, B.Length);
             S.Close();
